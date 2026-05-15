@@ -2,12 +2,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 const categories = [
-  { id: 'furniture', name: 'Furniture', bgColor: '#79b29c' },
-  { id: 'handbag',   name: 'Hand Bag',  bgColor: '#f2ad5b' },
-  { id: 'books',     name: 'Books',     bgColor: '#aa4238' },
-  { id: 'tech',      name: 'Tech',      bgColor: '#4cb771' },
-  { id: 'sneakers',  name: 'Sneakers',  bgColor: '#f0a2ad' },
-  { id: 'travel',    name: 'Travel',    bgColor: '#eeb85b' },
+  { id: 'oil', name: 'Oil', bgColor: '#79b29c' },
+  { id: 'serum', name: 'Serum', bgColor: '#f2ad5b' },
+  { id: 'kit', name: 'Kit', bgColor: '#aa4238' },
+  { id: 'tea', name: 'Tea', bgColor: '#4cb771' },
+  { id: 'shampoo', name: 'Shampoo', bgColor: '#f0a2ad' },
+  { id: 'travel', name: 'Travel', bgColor: '#eeb85b' },
 ]
 
 export default function TopCategories() {
@@ -33,10 +33,10 @@ export default function TopCategories() {
                   {cat.name}
                 </span>
               </div>
-              
+
               <div className="relative w-full h-40 mt-auto flex items-end justify-center">
-                 {/* Placeholder for the lifestyle product image */}
-                <Image 
+                {/* Placeholder for the lifestyle product image */}
+                <Image
                   src={`https://placehold.co/400x400/transparent/ffffff?text=${cat.name}`}
                   alt={cat.name}
                   fill

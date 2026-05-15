@@ -8,13 +8,21 @@ import {
 import { popularCategories } from '@/data/navigation'
 import type { Category } from '@/types/common'
 
-const iconMap: Record<string, LucideIcon> = {
+const iconMap: Record<string, LucideIcon> =
+{
   Armchair,
   ShoppingBag,
   Footprints,
   Headphones,
   Laptop,
   BookOpen,
+  // Warm Oil,
+  // Pimple Serum,
+  // Mushroom Facial Kit,
+  // Tea,
+  // Shyampoo,
+  // Dishwasher,
+  // Moringa Powder,
 }
 
 interface Props {

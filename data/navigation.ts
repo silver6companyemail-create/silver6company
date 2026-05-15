@@ -16,10 +16,18 @@ export const navLinks: NavLink[] = [
 ]
 
 export const popularCategories: Category[] = [
-  { id: 'furniture', name: 'Furniture',  itemCount: 240, icon: 'Armchair',    bgColor: '#FFF3E0', iconColor: '#E65100' },
-  { id: 'handbag',   name: 'Hand Bag',   itemCount: 240, icon: 'ShoppingBag', bgColor: '#FCE4EC', iconColor: '#C62828' },
-  { id: 'shoe',      name: 'Shoe',       itemCount: 240, icon: 'Footprints',  bgColor: '#E8F5E9', iconColor: '#2E7D32' },
-  { id: 'headphone', name: 'Headphone',  itemCount: 240, icon: 'Headphones',  bgColor: '#E3F2FD', iconColor: '#1565C0' },
-  { id: 'laptop',    name: 'Laptop',     itemCount: 240, icon: 'Laptop',      bgColor: '#F3E5F5', iconColor: '#6A1B9A' },
-  { id: 'book',      name: 'Book',       itemCount: 240, icon: 'BookOpen',    bgColor: '#FFF8E1', iconColor: '#F57F17' },
+  { id: 'oil', name: 'Oil', itemCount: 240, icon: 'Armchair', bgColor: '#FFF3E0', iconColor: '#E65100' },
+  { id: 'serum', name: 'Serum', itemCount: 240, icon: 'ShoppingBag', bgColor: '#FCE4EC', iconColor: '#C62828' },
+  { id: 'kit', name: 'Kit', itemCount: 240, icon: 'Footprints', bgColor: '#E8F5E9', iconColor: '#2E7D32' },
+  { id: 'tea', name: 'Tea', itemCount: 240, icon: 'Headphones', bgColor: '#E3F2FD', iconColor: '#1565C0' },
+  { id: 'shampoo', name: 'Shampoo', itemCount: 240, icon: 'Laptop', bgColor: '#F3E5F5', iconColor: '#6A1B9A' },
+  { id: 'dishwasher', name: 'Dishwasher', itemCount: 240, icon: 'BookOpen', bgColor: '#FFF8E1', iconColor: '#F57F17' },
+  { id: 'moringa', name: 'Moringa', itemCount: 240, icon: 'BookOpen', bgColor: '#FFF8E1', iconColor: '#F57F17' },
+]
+
+export const socialMedia = [
+  { id: 'facebook', name: 'Facebook', icon: 'Facebook', bgColor: '#FFF8E1', iconColor: '#F57F17' },
+  { id: 'instagram', name: 'Instagram', icon: 'Instagram', bgColor: '#FFF8E1', iconColor: '#F57F17' },
+  { id: 'twitter', name: 'Twitter', icon: 'Twitter', bgColor: '#FFF8E1', iconColor: '#F57F17' },
+  { id: 'youtube', name: 'Youtube', icon: 'Youtube', bgColor: '#FFF8E1', iconColor: '#F57F17' },
 ]

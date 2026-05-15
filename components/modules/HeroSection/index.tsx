@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import heroImg from '@/app/assets/warmoil4.png'
 
 export default function HeroSection() {
   return (
@@ -15,13 +16,13 @@ export default function HeroSection() {
           {/* Left: Text Content */}
           <div className="flex flex-col gap-6 z-10">
             <span className="inline-block w-fit px-3 py-1 rounded-full bg-white/30 text-[#1e4d2b] text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
-              🛍️ Department Store
+              🛍️ Silver6 online store
             </span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-[#1a3d25] leading-tight">
-              Shoppings And
+            <h1 className="text-3xl md:text-4xl lg:text-[3rem] font-bold text-[#1a3d25] leading-tight">
+              One And Only Solution
               <br />
-              Department Store.
+              Of Your Joints And Body Pain
             </h1>
 
             <p className="text-[#2d5a3d] text-base leading-relaxed max-w-sm">
@@ -47,8 +48,8 @@ export default function HeroSection() {
             {/* Stats Row */}
             <div className="flex items-center gap-8 pt-2">
               {[
-                { value: '10K+', label: 'Products' },
-                { value: '500+', label: 'Brands' },
+                { value: '10+', label: 'Products' },
+                { value: '50000+', label: 'Customers' },
                 { value: '24h', label: 'Delivery' },
               ].map((stat) => (
                 <div key={stat.label}>
@@ -62,8 +63,8 @@ export default function HeroSection() {
           {/* Right: Hero Product Image */}
           <div className="relative flex items-end justify-center md:justify-end h-80 md:h-[420px]">
             <Image
-              src="/hero-products.png"
-              alt="Shopping products on display platforms"
+              src={heroImg}
+              alt="Silver6 Warm Oil"
               fill
               className="object-contain object-bottom drop-shadow-2xl"
               priority
