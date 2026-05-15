@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
+/* ── Shopcart Design Tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --color-primary:       #2db34a;
+  --color-primary-dark:  #1e8a38;
+  --color-primary-light: #e8f8ed;
+
+  /* Text */
+  --color-text-main:    #111111;
+  --color-text-sub:     #555555;
+  --color-text-muted:   #999999;
+
+  /* Surfaces */
+  --color-surface:      #f8f8f8;
+  --color-border:       #e8e8e8;
+
+  /* Accents */
+  --color-star:         #f59e0b;
+
+  /* Layout */
+  --container-max:      1280px;
+  --section-py:         5rem;
+  --card-radius:        0.75rem;
+  --nav-h:              4rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ── Base Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
+  color: var(--color-text-main);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Utilities ── */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Smooth focus rings */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
