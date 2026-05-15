@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import ScrollAnimation from '@/components/common/ScrollAnimation'
 
 const services = [
   {
@@ -31,28 +32,30 @@ export default function Services() {
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Services To Help You Shop</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {services.map((svc, i) => (
-            <div key={i} className="flex flex-col rounded-2xl overflow-hidden group cursor-pointer shadow-sm hover:shadow-md transition-shadow bg-[#f5f6f8]">
-              <div className="p-8 pb-4">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 whitespace-pre-line leading-tight">
-                  {svc.title}
-                </h3>
-                <p className="text-sm text-gray-500 whitespace-pre-line leading-relaxed">
-                  {svc.desc}
-                </p>
+            <ScrollAnimation key={i} delay={i * 0.2}>
+              <div className="flex flex-col h-full rounded-2xl overflow-hidden group cursor-pointer shadow-sm hover:shadow-md transition-shadow bg-[#f5f6f8]">
+                <div className="p-8 pb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 whitespace-pre-line leading-tight">
+                    {svc.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 whitespace-pre-line leading-relaxed">
+                    {svc.desc}
+                  </p>
+                </div>
+                <div 
+                  className="relative w-full h-[220px] mt-auto transform group-hover:scale-105 transition-transform duration-500"
+                  style={{ backgroundColor: svc.imageBgColor }}
+                >
+                  <Image
+                    src={svc.image}
+                    alt={svc.title.replace('\n', ' ')}
+                    fill
+                    className="object-cover object-bottom"
+                    unoptimized
+                  />
+                </div>
               </div>
-              <div 
-                className="relative w-full h-[220px] mt-4 transform group-hover:scale-105 transition-transform duration-500"
-                style={{ backgroundColor: svc.imageBgColor }}
-              >
-                <Image
-                  src={svc.image}
-                  alt={svc.title.replace('\n', ' ')}
-                  fill
-                  className="object-cover object-bottom"
-                  unoptimized
-                />
-              </div>
-            </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

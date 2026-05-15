@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import ScrollAnimation from '@/components/common/ScrollAnimation'
 
 const categories = [
   { id: 'oil', name: 'Oil', bgColor: '#79b29c' },
@@ -21,10 +22,10 @@ export default function TopCategories() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/category/${cat.id}`}
+          {categories.map((cat, i) => (
+            <ScrollAnimation key={cat.id} delay={i * 0.1}>
+              <Link
+                href={`/category/${cat.id}`}
               className="relative flex flex-col items-center justify-between h-[260px] rounded-2xl overflow-hidden group transition-transform hover:-translate-y-1"
               style={{ backgroundColor: cat.bgColor }}
             >
@@ -45,6 +46,7 @@ export default function TopCategories() {
                 />
               </div>
             </Link>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

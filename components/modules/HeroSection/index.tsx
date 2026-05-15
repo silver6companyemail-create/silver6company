@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import heroImg from '@/app/assets/warmoil4.png'
+import ScrollAnimation from '@/components/common/ScrollAnimation'
 
 export default function HeroSection() {
   return (
@@ -14,7 +15,7 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 py-16 w-full">
 
           {/* Left: Text Content */}
-          <div className="flex flex-col gap-6 z-10">
+          <ScrollAnimation delay={0.1} className="flex flex-col gap-6 z-10">
             <span className="inline-block w-fit px-3 py-1 rounded-full bg-white/30 text-[#1e4d2b] text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
               🛍️ Silver6 online store
             </span>
@@ -58,10 +59,10 @@ export default function HeroSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollAnimation>
 
           {/* Right: Hero Product Image */}
-          <div className="relative flex items-end justify-center md:justify-end h-80 md:h-[420px]">
+          <ScrollAnimation delay={0.3} y={50} className="relative flex items-end justify-center md:justify-end h-80 md:h-[420px]">
             <Image
               src={heroImg}
               alt="Silver6 Warm Oil"
@@ -69,10 +70,9 @@ export default function HeroSection() {
               className="object-contain object-bottom drop-shadow-2xl"
               priority
             />
-          </div>
+          </ScrollAnimation>
         </div>
       </div>
-
       {/* Decorative blob */}
       <div
         className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-20 pointer-events-none"

@@ -1,9 +1,10 @@
 import ProductCard, { Product } from '@/components/common/ProductCard'
+import ScrollAnimation from '@/components/common/ScrollAnimation'
 
 const bestDeals: Product[] = [
   {
     id: '1',
-    name: 'HomePod mini',
+    name: 'Table with air purifier, stained veneer/black',
     description: 'Table with air purifier, stained veneer/black',
     price: 239.00,
     rating: 5,
@@ -34,10 +35,12 @@ export default function BestDeals() {
   return (
     <section className="py-14 bg-white">
       <div className="max-w-[1280px] mx-auto px-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Todays Best Deals For You!</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">Our Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {bestDeals.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {bestDeals.map((product, i) => (
+            <ScrollAnimation key={product.id} delay={i * 0.15}>
+              <ProductCard product={product} />
+            </ScrollAnimation>
           ))}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Logo from '@/components/common/Logo'
 import { popularCategories, socialMedia } from '@/data/navigation'
 import { Briefcase, HelpCircle, Gift } from 'lucide-react'
+import ScrollAnimation from '@/components/common/ScrollAnimation'
 
 const footerLinks = {
   Department: ['Fashion', 'Education Product', 'Frozen Food', 'Beverages', 'Organic Grocery', 'Office Supplies', 'Beauty Products', 'Books', 'Electronics & Gadget', 'Travel Accessories', 'Fitness', 'Sneakers', 'Toys', 'Furniture'],
@@ -11,8 +12,8 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-white pt-16 pb-8 border-t border-gray-200 mt-10">
-      <div className="max-w-[1280px] mx-auto px-6">
+    <footer className="bg-white pt-16 pb-8 border-t border-gray-200 mt-10 overflow-hidden">
+      <ScrollAnimation delay={0.1} y={40} className="max-w-[1280px] mx-auto px-6">
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
           {/* Brand Column */}
@@ -88,7 +89,7 @@ export default function Footer() {
           </p>
         </div>
 
-      </div>
+      </ScrollAnimation>
     </footer>
   )
 }
