@@ -8,6 +8,7 @@ import SearchBar from './SearchBar'
 import CategoryMenu from './CategoryMenu'
 import { navLinks } from '@/data/navigation'
 
+
 export default function Navbar() {
   const [categoryOpen, setCategoryOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -55,9 +56,10 @@ export default function Navbar() {
         </div>
 
         {/* Account */}
-        <button className="hidden md:flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
-          <User className="w-5 h-5" />
-        </button>
+        <Link href="/login" className="hidden md:flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-[#2db34a] hover:bg-green-50 rounded-lg transition-all duration-150">
+          <User className="w-4 h-4" />
+          Login
+        </Link>
 
         {/* Cart */}
         <button className="relative flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
