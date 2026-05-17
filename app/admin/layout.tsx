@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { LayoutDashboard, Users, Calendar, WalletCards, LaptopMinimal, BadgeDollarSign, LayersPlus, ShoppingBag, Settings, LogOut, Package, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, Calendar, WalletCards, LaptopMinimal, BadgeDollarSign, LayersPlus, ShoppingBag, Settings, LogOut, Package, Menu, X, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -81,7 +81,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="p-4 border-t border-gray-200 space-y-1">
-          <Link href="/admin/settings" className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href="/admin/leads" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/leads') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <ShieldCheck className="w-5 h-5" />
+            Lead Management
+          </Link>
+          <Link href="/admin/settings" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/settings') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Settings className="w-5 h-5" />
             Settings
           </Link>

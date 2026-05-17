@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Plus, Edit, Trash2, Eye, X } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, Eye, X, Key } from 'lucide-react'
 
 // --- Mock Data & Types ---
 type Role = 'Admin' | 'Editor' | 'Customer'
@@ -40,6 +40,7 @@ export default function AdminCustomers() {
     const [viewCustomer, setViewCustomer] = useState<User | null>(null)
     const [editCustomer, setEditCustomer] = useState<User | null>(null)
     const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+    const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null)
 
     // Form State for adding admin
     const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'Editor' as Role })
@@ -145,7 +146,7 @@ export default function AdminCustomers() {
                                     </>
                                 )}
                                 <th className="p-4 font-medium">Status</th>
-                                {activeTab === 'customers' && <th className="p-4 font-medium text-right">Actions</th>}
+                                <th className="p-4 font-medium text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -188,21 +189,26 @@ export default function AdminCustomers() {
                                         </span>
                                     </td>
 
-                                    {activeTab === 'customers' && (
-                                        <td className="p-4 text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button onClick={() => setViewCustomer(user)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={() => setEditCustomer(user)} className="p-1.5 text-gray-400 hover:text-[#2db34a] hover:bg-green-50 rounded-lg transition-colors" title="Edit">
-                                                    <Edit className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={() => setDeleteConfirmId(user.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    )}
+                                    <td className="p-4 text-right">
+                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button onClick={() => setResetPasswordUser(user)} className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Reset Password">
+                                                <Key className="w-4 h-4" />
+                                            </button>
+                                            {activeTab === 'customers' && (
+                                                <>
+                                                    <button onClick={() => setViewCustomer(user)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
+                                                        <Eye className="w-4 h-4" />
+                                                    </button>
+                                                    <button onClick={() => setEditCustomer(user)} className="p-1.5 text-gray-400 hover:text-[#2db34a] hover:bg-green-50 rounded-lg transition-colors" title="Edit">
+                                                        <Edit className="w-4 h-4" />
+                                                    </button>
+                                                    <button onClick={() => setDeleteConfirmId(user.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
 
@@ -362,6 +368,32 @@ export default function AdminCustomers() {
                             </button>
                             <button onClick={handleDeleteCustomer} className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg font-medium transition-colors flex-1">
                                 Yes, Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Reset Password Modal */}
+            {resetPasswordUser && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden p-6 text-center">
+                        <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                            <Key className="w-8 h-8" />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">Reset Password?</h2>
+                        <p className="text-gray-500 mb-6 text-sm">
+                            Send a password reset link to <strong>{resetPasswordUser.email}</strong>? They will receive an email with instructions to create a new password.
+                        </p>
+                        <div className="flex gap-3 justify-center">
+                            <button onClick={() => setResetPasswordUser(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors flex-1">
+                                Cancel
+                            </button>
+                            <button onClick={() => {
+                                alert(`Password reset link sent to ${resetPasswordUser.email}`);
+                                setResetPasswordUser(null);
+                            }} className="px-4 py-2 bg-amber-600 text-white hover:bg-amber-700 rounded-lg font-medium transition-colors flex-1">
+                                Send Link
                             </button>
                         </div>
                     </div>
