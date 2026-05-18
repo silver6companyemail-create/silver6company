@@ -132,12 +132,12 @@ export default function AdminProducts() {
                                     <td className="p-4 text-gray-600">{product.stock}</td>
                                     <td className="p-4">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'Active' ? 'bg-green-50 text-green-700' :
-                                                product.status === 'Draft' ? 'bg-gray-100 text-gray-700' :
-                                                    'bg-red-50 text-red-700'
+                                            product.status === 'Draft' ? 'bg-gray-100 text-gray-700' :
+                                                'bg-red-50 text-red-700'
                                             }`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${product.status === 'Active' ? 'bg-green-500' :
-                                                    product.status === 'Draft' ? 'bg-gray-500' :
-                                                        'bg-red-500'
+                                                product.status === 'Draft' ? 'bg-gray-500' :
+                                                    'bg-red-500'
                                                 }`} />
                                             {product.status}
                                         </span>
@@ -212,6 +212,14 @@ export default function AdminProducts() {
                                     <option value="Travel">Travel</option>
                                 </select>
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Product Description</label>
+                                <input required type="text" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2db34a] focus:ring-1 focus:ring-[#2db34a]" placeholder="e.g. Wireless Headphones" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                                <input required type="text" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2db34a] focus:ring-1 focus:ring-[#2db34a]" placeholder="e.g. Wireless Headphones" />
+                            </div>
                             <div className="pt-4 flex justify-end gap-3">
                                 <button type="button" onClick={() => setIsAddOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors">Cancel</button>
                                 <button type="submit" className="px-4 py-2 bg-[#2db34a] text-white rounded-lg font-medium hover:bg-[#259b3f] transition-colors">Add Product</button>
@@ -253,12 +261,12 @@ export default function AdminProducts() {
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Status</p>
                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${viewProduct.status === 'Active' ? 'bg-green-50 text-green-700' :
-                                            viewProduct.status === 'Draft' ? 'bg-gray-100 text-gray-700' :
-                                                'bg-red-50 text-red-700'
+                                        viewProduct.status === 'Draft' ? 'bg-gray-100 text-gray-700' :
+                                            'bg-red-50 text-red-700'
                                         }`}>
                                         <span className={`w-1.5 h-1.5 rounded-full ${viewProduct.status === 'Active' ? 'bg-green-500' :
-                                                viewProduct.status === 'Draft' ? 'bg-gray-500' :
-                                                    'bg-red-500'
+                                            viewProduct.status === 'Draft' ? 'bg-gray-500' :
+                                                'bg-red-500'
                                             }`} />
                                         {viewProduct.status}
                                     </span>

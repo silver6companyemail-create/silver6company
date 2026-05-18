@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { LayoutDashboard, Users, Calendar, WalletCards, LaptopMinimal, BadgeDollarSign, LayersPlus, ShoppingBag, Settings, LogOut, Package, Menu, X, ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, Users, Calendar, WalletCards, Coins, LaptopMinimal, PhoneForwarded, BadgeDollarSign, LayersPlus, ShoppingBag, Settings, LogOut, Package, Menu, X, ShieldCheck, Brush } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -46,45 +46,65 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <LayoutDashboard className="w-5 h-5" />
             Dashboard
           </Link>
-          <Link href="/admin/orders" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/orders') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <ShoppingBag className="w-5 h-5" />
-            Orders
-          </Link>
-          <Link href="/admin/products" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/products') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Package className="w-5 h-5" />
-            Products
-          </Link>
           <Link href="/admin/customers" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/customers') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Users className="w-5 h-5" />
-            Customers
+            User Management
           </Link>
-          <Link href="/admin/accounts" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/accounts') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <WalletCards className="w-5 h-5" />
-            Accounts
-          </Link>
-          <Link href="/admin/creativedepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/creativedepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <LaptopMinimal className="w-5 h-5" />
-            Creative Department
-          </Link>
-          <Link href="/admin/salesdepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/salesdepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <BadgeDollarSign className="w-5 h-5" />
-            Sales Department
-          </Link>
-          <Link href="/admin/stockdepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/stockdepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <LayersPlus className="w-5 h-5" />
-            Stock Department
-          </Link>
-          <Link href="/admin/schedules" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/schedules') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Calendar className="w-5 h-5" />
-            Schedules
-          </Link>
-        </nav>
-
-        <div className="p-4 border-t border-gray-200 space-y-1">
           <Link href="/admin/leads" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/leads') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
             <ShieldCheck className="w-5 h-5" />
             Lead Management
           </Link>
+          <Link href="/admin/salesdepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/salesdepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <PhoneForwarded className="w-5 h-5" />
+            Sales Department
+          </Link>
+          <Link href="/admin/orders" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/orders') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <ShoppingBag className="w-5 h-5" />
+            Order Management
+          </Link>
+          <Link href="/admin/products" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/products') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Package className="w-5 h-5" />
+            Product
+          </Link>
+          <Link href="/admin/vendors" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/vendors') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Users className="w-5 h-5" />
+            Vendor
+          </Link>
+          <Link href="/admin/creativedepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/creativedepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Brush className="w-5 h-5" />
+            Creative Department
+          </Link>
+          <Link href="/admin/accounts" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/accounts') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <WalletCards className="w-5 h-5" />
+            Expense / Accounts
+          </Link>
+          <Link href="/admin/stockdepart" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/stockdepart') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <LayersPlus className="w-5 h-5" />
+            Inventory
+          </Link>
+          <Link href="/admin/schedules" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/schedules') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Calendar className="w-5 h-5" />
+            Task Management
+          </Link>
+          <Link href="/admin/coupons" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/coupons') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <BadgeDollarSign className="w-5 h-5" />
+            Coupons and Offers
+          </Link>
+          <Link href="/admin/delivery-charges" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/delivery-charges') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Coins className="w-5 h-5" />
+            Delivery Charges
+          </Link>
+          <Link href="/admin/reports" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/reports') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <LayoutDashboard className="w-5 h-5" />
+            Reports
+          </Link>
+          <Link href="/admin/landing-controls" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/landing-controls') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
+            <Settings className="w-5 h-5" />
+            Landing Page Controls
+          </Link>
+        </nav>
+
+        <div className="p-4 border-t border-gray-200 space-y-1">
           <Link href="/admin/settings" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/settings') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Settings className="w-5 h-5" />
             Settings
