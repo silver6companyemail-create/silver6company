@@ -31,14 +31,37 @@ const weeklyPopular: Product[] = [
   }
 ]
 
-export default function WeeklyPopular() {
+export default async function WeeklyPopular() {
+  let products = [];
+  try {
+    const res = await fetch('http://localhost:1000/api/products/weekly', { next: { revalidate: 0 } });
+    if (res.ok) {
+      products = await res.json();
+    }
+  } catch (err) {
+    console.error('Failed to fetch weekly products', err);
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="py-14 bg-white">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Weekly Popular Products</h2>
+          <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            No products have been marked as weekly popular yet.
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-14 bg-white">
       <div className="max-w-[1280px] mx-auto px-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Weekly Popular Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {weeklyPopular.map((product, i) => (
-            <ScrollAnimation key={product.id} delay={i * 0.15}>
+          {products.map((product: any, i: number) => (
+            <ScrollAnimation key={product._id || product.id} delay={i * 0.15}>
               <ProductCard product={product} />
             </ScrollAnimation>
           ))}

@@ -2,11 +2,61 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react'
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  const handleRegister = async (e: React.FormEvent) => {
+      e.preventDefault()
+      setError('')
+      
+      if (password !== confirmPassword) {
+          setError('Passwords do not match')
+          return
+      }
+
+      setLoading(true)
+
+      try {
+          const res = await fetch('http://localhost:1000/api/users/register', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name, email, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+              // Save user info or token
+              localStorage.setItem('userInfo', JSON.stringify(data));
+              toast.success('Account created successfully! Please login.')
+              router.push('/login') // Redirect to login
+          } else {
+              const errorMsg = data.message || 'Something went wrong'
+              setError(errorMsg);
+              toast.error(errorMsg);
+          }
+      } catch (err) {
+          const errorMsg = 'Could not connect to the server. Please try again.';
+          setError(errorMsg);
+          toast.error(errorMsg);
+      } finally {
+          setLoading(false)
+      }
+  }
 
   return (
     <div className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -18,7 +68,9 @@ export default function Register() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        {error && <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">{error}</div>}
+
+        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -34,6 +86,8 @@ export default function Register() {
                   type="text"
                   autoComplete="name"
                   required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                   placeholder="John Doe"
                 />
@@ -54,6 +108,8 @@ export default function Register() {
                   type="email"
                   autoComplete="email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                   placeholder="Enter your email"
                 />
@@ -74,6 +130,8 @@ export default function Register() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                   placeholder="Create a password"
                 />
@@ -101,6 +159,8 @@ export default function Register() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                   placeholder="Confirm your password"
                 />
@@ -138,10 +198,11 @@ export default function Register() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#2db34a] hover:bg-[#24943c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2db34a] transition-colors shadow-sm"
+              disabled={loading}
+              className="group relative w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#2db34a] hover:bg-[#24943c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2db34a] transition-colors shadow-sm disabled:opacity-50"
             >
-              Create Account
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              {loading ? 'Creating Account...' : 'Create Account'}
+              {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
             </button>
           </div>
         </form>

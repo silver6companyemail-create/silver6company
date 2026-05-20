@@ -74,6 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Brush className="w-5 h-5" />
             Creative Department
           </Link>
+
           <Link href="/admin/accounts" className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors ${isActive('/admin/accounts') ? 'bg-green-50 text-[#2db34a]' : 'text-gray-600 hover:bg-gray-50'}`} onClick={() => setIsMobileMenuOpen(false)}>
             <WalletCards className="w-5 h-5" />
             Expense / Accounts

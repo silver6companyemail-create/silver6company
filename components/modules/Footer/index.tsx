@@ -1,16 +1,28 @@
 import Logo from '@/components/common/Logo'
-import { popularCategories, socialMedia } from '@/data/navigation'
 import { Briefcase, HelpCircle, Gift } from 'lucide-react'
 import ScrollAnimation from '@/components/common/ScrollAnimation'
 
-const footerLinks = {
-  Department: ['Fashion', 'Education Product', 'Frozen Food', 'Beverages', 'Organic Grocery', 'Office Supplies', 'Beauty Products', 'Books', 'Electronics & Gadget', 'Travel Accessories', 'Fitness', 'Sneakers', 'Toys', 'Furniture'],
-  AboutUs: ['About Shopcart', 'Careers', 'News & Blog', 'Help', 'Press Center', 'Shop By Location', 'Shopcart Brands', 'Affiliate & Partners', 'Ideas & Guides'],
-  Services: ['Gift Card', 'Mobile App', 'Shipping & Delivery', 'Order Pickup', 'Account Signup'],
-  Help: ['Shopcart Help', 'Returns', 'Track Orders', 'Contact Us', 'Feedback', 'Security & Fraud']
-}
+export default async function Footer() {
+  let footer = {
+    brandDescription: 'Silver 6 is a growing Nepali brand...',
+    aboutUsLinks: [],
+    socialMediaLinks: [],
+    helpLinks: [],
+    copyrightText: 'All Right Reserved By Silver 6 pvt .ltd'
+  };
+  let categories = [];
 
-export default function Footer() {
+  try {
+    const [footerRes, catRes] = await Promise.all([
+      fetch('http://localhost:1000/api/footer', { next: { revalidate: 0 } }),
+      fetch('http://localhost:1000/api/categories', { next: { revalidate: 0 } })
+    ]);
+    if (footerRes.ok) footer = await footerRes.json();
+    if (catRes.ok) categories = await catRes.json();
+  } catch (err) {
+    console.error('Failed to load footer data', err);
+  }
+
   return (
     <footer className="bg-white pt-16 pb-8 border-t border-gray-200 mt-10 overflow-hidden">
       <ScrollAnimation delay={0.1} y={40} className="max-w-[1280px] mx-auto px-6">
@@ -20,7 +32,7 @@ export default function Footer() {
           <div className="md:col-span-4 pr-8">
             <Logo />
             <p className="text-sm text-gray-500 mt-6 leading-relaxed">
-              Silver 6 is a growing Nepali brand committed to delivering quality, trust, and innovation through premium wellness and skincare products. With a strong focus on customer satisfaction, effectiveness, and everyday comfort, we create products designed to become a trusted part of people’s daily lives. From skincare serums to warm oils, every Silver 6 product is developed with care, modern standards, and a vision to represent confident and reliable Nepali entrepreneurship.
+              {footer.brandDescription}
             </p>
             <div className="mt-8">
               <h4 className="text-sm font-bold text-gray-900 mb-4">Accepted Payments</h4>
@@ -39,17 +51,18 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-sm font-bold text-gray-900 mb-6">Categories</h4>
             <ul className="flex flex-col gap-3">
-              {popularCategories.map(link => (
-                <li key={link.id}><a href={`/category/${link.id}`} className="text-sm text-gray-600 hover:text-[#2db34a]">{link.name}</a></li>
+              {categories.slice(0, 10).map((cat: any) => (
+                <li key={cat._id}><a href={`/category/${cat._id}`} className="text-sm text-gray-600 hover:text-[#2db34a]">{cat.name}</a></li>
               ))}
+              {categories.length === 0 && <li className="text-sm text-gray-400">No categories</li>}
             </ul>
           </div>
 
           <div className="md:col-span-2">
             <h4 className="text-sm font-bold text-gray-900 mb-6">About Us</h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks.AboutUs.map(link => (
-                <li key={link}><a href="#" className="text-sm text-gray-600 hover:text-[#2db34a]">{link}</a></li>
+              {footer.aboutUsLinks?.map((link: any, i: number) => (
+                <li key={i}><a href={link.url} className="text-sm text-gray-600 hover:text-[#2db34a]">{link.label}</a></li>
               ))}
             </ul>
           </div>
@@ -57,8 +70,8 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-sm font-bold text-gray-900 mb-6">Social Media</h4>
             <ul className="flex flex-col gap-3">
-              {socialMedia.map(link => (
-                <li key={link.id}><a href={`#`} className="text-sm text-gray-600 hover:text-[#2db34a]">{link.name}</a></li>
+              {footer.socialMediaLinks?.map((link: any, i: number) => (
+                <li key={i}><a href={link.url} className="text-sm text-gray-600 hover:text-[#2db34a]">{link.label}</a></li>
               ))}
             </ul>
           </div>
@@ -66,8 +79,8 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-sm font-bold text-gray-900 mb-6">Help</h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks.Help.map(link => (
-                <li key={link}><a href="#" className="text-sm text-gray-600 hover:text-[#2db34a]">{link}</a></li>
+              {footer.helpLinks?.map((link: any, i: number) => (
+                <li key={i}><a href={link.url} className="text-sm text-gray-600 hover:text-[#2db34a]">{link.label}</a></li>
               ))}
             </ul>
           </div>
@@ -85,7 +98,7 @@ export default function Footer() {
             <a href="#" className="text-sm text-gray-600 hover:text-[#2db34a]">Privacy & Policy</a>
           </div>
           <p className="text-sm text-gray-500">
-            All Right Reserved By <a href="#" className="text-[#2db34a] underline">Silver 6 pvt .ltd</a>
+            {footer.copyrightText}
           </p>
         </div>
 

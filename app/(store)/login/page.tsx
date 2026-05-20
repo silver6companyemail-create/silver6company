@@ -3,16 +3,55 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const router = useRouter()
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Temporary redirect without authentication
-        router.push('/admin')
+        setError('')
+        setLoading(true)
+
+        try {
+            const res = await fetch('http://localhost:1000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // Save token or user info if needed
+                localStorage.setItem('userInfo', JSON.stringify(data));
+                toast.success('Login successful!')
+                
+                if (data.role === 'user') {
+                    router.push('/user-dashboard')
+                } else {
+                    router.push('/admin')
+                }
+            } else {
+                const errorMsg = data.message || 'Invalid credentials'
+                setError(errorMsg);
+                toast.error(errorMsg);
+            }
+        } catch (err) {
+            const errorMsg = 'Something went wrong. Please try again later.';
+            setError(errorMsg);
+            toast.error(errorMsg);
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -20,8 +59,9 @@ export default function Login() {
             <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl shadow-sm border border-gray-100">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back</h2>
-
                 </div>
+
+                {error && <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">{error}</div>}
 
                 <form className="mt-8 space-y-6" onSubmit={handleLogin}>
                     <div className="space-y-4">
@@ -39,6 +79,8 @@ export default function Login() {
                                     type="email"
                                     autoComplete="email"
                                     required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="appearance-none block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                                     placeholder="Enter your email"
                                 />
@@ -59,6 +101,8 @@ export default function Login() {
                                     type={showPassword ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="appearance-none block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2db34a] focus:border-transparent transition-shadow text-sm"
                                     placeholder="••••••••"
                                 />
@@ -96,10 +140,10 @@ export default function Login() {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#2db34a] hover:bg-[#24943c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2db34a] transition-colors shadow-sm"
+                            disabled={loading}
+                            className="group relative w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#2db34a] hover:bg-[#24943c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2db34a] transition-colors shadow-sm disabled:opacity-50"
                         >
-                            Sign in
-
+                            {loading ? 'Signing in...' : 'Sign in'}
                         </button>
                     </div>
                 </form>

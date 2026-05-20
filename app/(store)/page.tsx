@@ -6,10 +6,12 @@ import Promotions     from '@/components/modules/Promotions'
 import WeeklyPopular  from '@/components/modules/WeeklyPopular'
 import Services       from '@/components/modules/Services'
 import Footer         from '@/components/modules/Footer'
+import AdPopup        from '@/components/modules/AdPopup'
 
 export default function HomePage() {
   return (
     <>
+      <AdPopup />
       <HeroSection />
       <TopCategories />
       <BestDeals />
@@ -21,4 +23,5 @@ export default function HomePage() {
     </>
   )
 }
+
 

@@ -2,14 +2,27 @@
 
 import { useState } from 'react'
 import { Search, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
+  const router = useRouter()
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault()
+    const q = query.trim()
+    if (q) router.push(`/search?q=${encodeURIComponent(q)}`)
+  }
 
   return (
-    <div className="relative flex items-center w-full max-w-xs">
+    <form onSubmit={handleSearch} className="relative flex items-center w-full max-w-xs">
       <div className="relative w-full">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <button
+          type="submit"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#2db34a] transition-colors"
+        >
+          <Search className="w-4 h-4" />
+        </button>
         <input
           type="text"
           value={query}
@@ -19,6 +32,7 @@ export default function SearchBar() {
         />
         {query && (
           <button
+            type="button"
             onClick={() => setQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
@@ -26,6 +40,6 @@ export default function SearchBar() {
           </button>
         )}
       </div>
-    </div>
+    </form>
   )
 }

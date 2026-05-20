@@ -1,25 +1,40 @@
+'use client'
+
 import Image from 'next/image'
 import { Heart } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 
+import Link from 'next/link'
+
 export interface Product {
-  id: string
+  id?: string
+  _id?: string
   name: string
   description: string
   price: number
   rating: number
   reviewCount: number
   image: string
+  category?: string
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+  const link = `/product/${product._id || product.id}`;
   return (
-    <div className="flex flex-col group">
+    <div className="flex flex-col group relative">
       {/* Image Area */}
-      <div className="relative bg-[#f5f6f8] rounded-2xl aspect-square mb-4 overflow-hidden flex items-center justify-center p-6">
-        <button className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400 hover:text-red-500 hover:scale-110 transition-all z-10">
+      <Link href={link} className="relative bg-[#f5f6f8] rounded-2xl aspect-square mb-4 overflow-hidden flex items-center justify-center p-6 block">
+        <button 
+          className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400 hover:text-red-500 hover:scale-110 transition-all z-10"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        >
           <Heart className="w-4 h-4" />
         </button>
+        {product.category && (
+          <span className="absolute top-4 left-4 z-10 inline-block px-2.5 py-1 bg-white/80 backdrop-blur-sm border border-gray-200 text-xs font-bold text-gray-700 rounded-lg shadow-sm">
+            {product.category}
+          </span>
+        )}
         <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-300">
           <Image
             src={product.image}
@@ -29,25 +44,27 @@ export default function ProductCard({ product }: { product: Product }) {
             unoptimized
           />
         </div>
-      </div>
+      </Link>
 
       {/* Details Area */}
-      <div className="flex justify-between items-start mb-1">
-        <h3 className="font-bold text-gray-900 truncate pr-2">{product.name}</h3>
-        <span className="font-bold text-gray-900 whitespace-nowrap">{formatPrice(product.price)}</span>
-      </div>
-      <p className="text-xs text-gray-500 mb-2 truncate">{product.description}</p>
+      <Link href={link} className="block">
+        <div className="flex justify-between items-start mb-1">
+          <h3 className="font-bold text-gray-900 truncate pr-2 group-hover:text-[#2db34a] transition-colors">{product.name}</h3>
+          <span className="font-bold text-gray-900 whitespace-nowrap">{formatPrice(product.price)}</span>
+        </div>
+        <p className="text-xs text-gray-500 mb-2 truncate">{product.description}</p>
+      </Link>
 
       {/* Rating */}
       <div className="flex items-center gap-1 mb-4">
         <div className="flex text-[#2db34a]">
           {[...Array(5)].map((_, i) => (
-            <svg key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-gray-300'}`} viewBox="0 0 20 20">
+            <svg key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating || 0) ? 'fill-current' : 'fill-gray-300'}`} viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           ))}
         </div>
-        <span className="text-xs text-gray-500">({product.reviewCount})</span>
+        <span className="text-xs text-gray-500">({product.reviewCount || 0})</span>
       </div>
 
       {/* Add to Cart Button */}

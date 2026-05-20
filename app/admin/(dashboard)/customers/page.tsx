@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, Plus, Edit, Trash2, Eye, X, Key } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
-// --- Mock Data & Types ---
-type Role = 'Admin' | 'Editor' | 'Customer'
-type Status = 'Active' | 'Inactive' | 'Pending'
+// --- Types ---
+type Role = 'Admin' | 'Editor' | 'user' | string
+type Status = 'Active' | 'Inactive' | 'Pending' | string
 
 interface User {
-    id: string
+    _id: string
     name: string
     email: string
     role: Role
@@ -17,23 +18,12 @@ interface User {
     joinedDate?: string
 }
 
-const initialAdmins: User[] = [
-    { id: 'a1', name: 'Super Admin', email: 'admin@silver6.com', role: 'Admin', status: 'Active' },
-    { id: 'a2', name: 'Content Editor', email: 'editor@silver6.com', role: 'Editor', status: 'Active' },
-]
-
-const initialCustomers: User[] = [
-    { id: 'c1', name: 'John Doe', email: 'john@example.com', role: 'Customer', status: 'Active', phone: '+1 234 567 8900', joinedDate: '2023-10-01' },
-    { id: 'c2', name: 'Jane Smith', email: 'jane@example.com', role: 'Customer', status: 'Inactive', phone: '+1 987 654 3210', joinedDate: '2023-11-15' },
-    { id: 'c3', name: 'Alice Johnson', email: 'alice@example.com', role: 'Customer', status: 'Pending', phone: '+1 555 123 4567', joinedDate: '2024-01-20' },
-]
-
 export default function AdminCustomers() {
     const [activeTab, setActiveTab] = useState<'admins' | 'customers'>('admins')
 
     // State for Lists
-    const [admins, setAdmins] = useState<User[]>(initialAdmins)
-    const [customers, setCustomers] = useState<User[]>(initialCustomers)
+    const [admins, setAdmins] = useState<User[]>([])
+    const [customers, setCustomers] = useState<User[]>([])
 
     // Modals State
     const [isAddAdminOpen, setIsAddAdminOpen] = useState(false)
@@ -41,36 +31,133 @@ export default function AdminCustomers() {
     const [editCustomer, setEditCustomer] = useState<User | null>(null)
     const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
     const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null)
+    const [newPassword, setNewPassword] = useState('')
 
-    // Form State for adding admin
-    const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'Editor' as Role })
+    // Form State for adding user
+    const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'user' as Role })
+
+    const getToken = () => {
+        const userInfo = localStorage.getItem('userInfo');
+        return userInfo ? JSON.parse(userInfo).token : '';
+    }
+
+    const fetchUsers = async () => {
+        try {
+            const res = await fetch('http://localhost:1000/api/users', {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                const adminList = data.filter((u: User) => u.role !== 'user' && u.role !== 'Customer');
+                const customerList = data.filter((u: User) => u.role === 'user' || u.role === 'Customer');
+                setAdmins(adminList);
+                setCustomers(customerList);
+            } else {
+                toast.error(data.message || 'Failed to fetch users');
+            }
+        } catch (error) {
+            toast.error('Could not connect to server');
+        }
+    }
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
     // --- Handlers ---
-    const handleAddAdmin = (e: React.FormEvent) => {
+    const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault()
-        const newUser: User = {
-            id: `a${Date.now()}`,
-            name: newAdmin.name,
-            email: newAdmin.email,
-            role: newAdmin.role,
-            status: 'Active'
+        try {
+            const res = await fetch('http://localhost:1000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify(newAdmin)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success('User created successfully');
+                fetchUsers();
+                setIsAddAdminOpen(false);
+                setNewAdmin({ name: '', email: '', password: '', role: 'user' });
+            } else {
+                toast.error(data.message || 'Failed to create user');
+            }
+        } catch (error) {
+            toast.error('Server error');
         }
-        setAdmins([...admins, newUser])
-        setIsAddAdminOpen(false)
-        setNewAdmin({ name: '', email: '', password: '', role: 'Editor' })
     }
 
-    const handleEditCustomerSave = (e: React.FormEvent) => {
+    const handleEditCustomerSave = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!editCustomer) return
-        setCustomers(customers.map(c => c.id === editCustomer.id ? editCustomer : c))
-        setEditCustomer(null)
+        try {
+            const res = await fetch(`http://localhost:1000/api/users/${editCustomer._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify(editCustomer)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success('User updated successfully');
+                fetchUsers();
+                setEditCustomer(null);
+            } else {
+                toast.error(data.message || 'Failed to update user');
+            }
+        } catch (error) {
+            toast.error('Server error');
+        }
     }
 
-    const handleDeleteCustomer = () => {
+    const handleDeleteCustomer = async () => {
         if (!deleteConfirmId) return
-        setCustomers(customers.filter(c => c.id !== deleteConfirmId))
-        setDeleteConfirmId(null)
+        try {
+            const res = await fetch(`http://localhost:1000/api/users/${deleteConfirmId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (res.ok) {
+                toast.success('User deleted successfully');
+                fetchUsers();
+                setDeleteConfirmId(null);
+            } else {
+                toast.error('Failed to delete user');
+            }
+        } catch (error) {
+            toast.error('Server error');
+        }
+    }
+
+    const handleResetPassword = async () => {
+        if (!resetPasswordUser || !newPassword) {
+            toast.error('Please enter a new password');
+            return;
+        }
+        try {
+            const res = await fetch(`http://localhost:1000/api/users/${resetPasswordUser._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify({ password: newPassword })
+            });
+            if (res.ok) {
+                toast.success('Password updated successfully');
+                setResetPasswordUser(null);
+                setNewPassword('');
+            } else {
+                toast.error('Failed to update password');
+            }
+        } catch (error) {
+            toast.error('Server error');
+        }
     }
 
     return (
@@ -81,15 +168,13 @@ export default function AdminCustomers() {
                     <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
                     <p className="text-gray-500 text-sm mt-1">Manage your administrative team and customer accounts.</p>
                 </div>
-                {activeTab === 'admins' && (
-                    <button
-                        onClick={() => setIsAddAdminOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#2db34a] text-white rounded-lg hover:bg-[#259b3f] transition-colors"
-                    >
-                        <Plus className="w-4 h-4" />
-                        <span>Add Admin / Staff</span>
-                    </button>
-                )}
+                <button
+                    onClick={() => setIsAddAdminOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-[#2db34a] text-white rounded-lg hover:bg-[#259b3f] transition-colors"
+                >
+                    <Plus className="w-4 h-4" />
+                    <span>Add User</span>
+                </button>
             </div>
 
             {/* Tabs */}
@@ -137,44 +222,32 @@ export default function AdminCustomers() {
                             <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 text-sm">
                                 <th className="p-4 font-medium">Name</th>
                                 <th className="p-4 font-medium">Email</th>
-                                {activeTab === 'admins' ? (
-                                    <th className="p-4 font-medium">Role</th>
-                                ) : (
-                                    <>
-                                        <th className="p-4 font-medium">Phone</th>
-                                        <th className="p-4 font-medium">Joined Date</th>
-                                    </>
-                                )}
+                                <th className="p-4 font-medium">Role</th>
+                                <th className="p-4 font-medium">Phone</th>
                                 <th className="p-4 font-medium">Status</th>
                                 <th className="p-4 font-medium text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {(activeTab === 'admins' ? admins : customers).map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
+                                <tr key={user._id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-medium">
-                                                {user.name.charAt(0)}
+                                                {user.name.charAt(0).toUpperCase()}
                                             </div>
                                             <span className="font-medium text-gray-900">{user.name}</span>
                                         </div>
                                     </td>
                                     <td className="p-4 text-gray-600">{user.email}</td>
 
-                                    {activeTab === 'admins' ? (
-                                        <td className="p-4">
-                                            <span className={`inline-flex px-2 py-1 rounded-md text-xs font-medium ${user.role === 'Admin' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'
-                                                }`}>
-                                                {user.role}
-                                            </span>
-                                        </td>
-                                    ) : (
-                                        <>
-                                            <td className="p-4 text-gray-600">{user.phone || 'N/A'}</td>
-                                            <td className="p-4 text-gray-600">{user.joinedDate || 'N/A'}</td>
-                                        </>
-                                    )}
+                                    <td className="p-4">
+                                        <span className={`inline-flex px-2 py-1 rounded-md text-xs font-medium ${user.role === 'Admin' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'
+                                            }`}>
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-gray-600">{user.phone || 'N/A'}</td>
 
                                     <td className="p-4">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.status === 'Active' ? 'bg-green-50 text-green-700' :
@@ -190,23 +263,19 @@ export default function AdminCustomers() {
                                     </td>
 
                                     <td className="p-4 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center justify-end gap-2 opacity-100 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => setResetPasswordUser(user)} className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Reset Password">
                                                 <Key className="w-4 h-4" />
                                             </button>
-                                            {activeTab === 'customers' && (
-                                                <>
-                                                    <button onClick={() => setViewCustomer(user)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
-                                                        <Eye className="w-4 h-4" />
-                                                    </button>
-                                                    <button onClick={() => setEditCustomer(user)} className="p-1.5 text-gray-400 hover:text-[#2db34a] hover:bg-green-50 rounded-lg transition-colors" title="Edit">
-                                                        <Edit className="w-4 h-4" />
-                                                    </button>
-                                                    <button onClick={() => setDeleteConfirmId(user.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </>
-                                            )}
+                                            <button onClick={() => setViewCustomer(user)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => setEditCustomer(user)} className="p-1.5 text-gray-400 hover:text-[#2db34a] hover:bg-green-50 rounded-lg transition-colors" title="Edit">
+                                                <Edit className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => setDeleteConfirmId(user._id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -226,17 +295,17 @@ export default function AdminCustomers() {
 
             {/* --- Modals --- */}
 
-            {/* Add Admin Modal */}
+            {/* Add User Modal */}
             {isAddAdminOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
                         <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                            <h2 className="text-xl font-bold text-gray-900">Add Administrative User</h2>
+                            <h2 className="text-xl font-bold text-gray-900">Add New User</h2>
                             <button onClick={() => setIsAddAdminOpen(false)} className="text-gray-400 hover:text-gray-600">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <form onSubmit={handleAddAdmin} className="p-5 space-y-4">
+                        <form onSubmit={handleAddUser} className="p-5 space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                 <input required type="text" value={newAdmin.name} onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2db34a]" placeholder="John Doe" />
@@ -254,6 +323,7 @@ export default function AdminCustomers() {
                                 <select value={newAdmin.role} onChange={e => setNewAdmin({ ...newAdmin, role: e.target.value as Role })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2db34a]">
                                     <option value="Admin">Admin (Full Access)</option>
                                     <option value="Editor">Editor (Limited Access)</option>
+                                    <option value="user">Normal User (Customer)</option>
                                 </select>
                             </div>
                             <div className="pt-4 flex justify-end gap-3">
@@ -270,7 +340,7 @@ export default function AdminCustomers() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
                         <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                            <h2 className="text-xl font-bold text-gray-900">Customer Details</h2>
+                            <h2 className="text-xl font-bold text-gray-900">User Details</h2>
                             <button onClick={() => setViewCustomer(null)} className="text-gray-400 hover:text-gray-600">
                                 <X className="w-5 h-5" />
                             </button>
@@ -278,7 +348,7 @@ export default function AdminCustomers() {
                         <div className="p-5 space-y-4">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center text-green-600 text-2xl font-bold">
-                                    {viewCustomer.name.charAt(0)}
+                                    {viewCustomer.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900">{viewCustomer.name}</h3>
@@ -300,7 +370,7 @@ export default function AdminCustomers() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Joined Date</p>
-                                    <p className="text-sm font-medium text-gray-900">{viewCustomer.joinedDate || 'N/A'}</p>
+                                    <p className="text-sm font-medium text-gray-900">{viewCustomer.joinedDate ? new Date(viewCustomer.joinedDate).toLocaleDateString() : 'N/A'}</p>
                                 </div>
                             </div>
                             <div className="pt-4 flex justify-end">
@@ -316,7 +386,7 @@ export default function AdminCustomers() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
                         <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                            <h2 className="text-xl font-bold text-gray-900">Edit Customer</h2>
+                            <h2 className="text-xl font-bold text-gray-900">Edit User</h2>
                             <button onClick={() => setEditCustomer(null)} className="text-gray-400 hover:text-gray-600">
                                 <X className="w-5 h-5" />
                             </button>
@@ -333,6 +403,14 @@ export default function AdminCustomers() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                                 <input type="text" value={editCustomer.phone || ''} onChange={e => setEditCustomer({ ...editCustomer, phone: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2db34a]" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <select value={editCustomer.role} onChange={e => setEditCustomer({ ...editCustomer, role: e.target.value as Role })} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2db34a]">
+                                    <option value="Admin">Admin</option>
+                                    <option value="Editor">Editor</option>
+                                    <option value="user">User (Customer)</option>
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -358,7 +436,7 @@ export default function AdminCustomers() {
                         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
                             <Trash2 className="w-8 h-8" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-2">Delete Customer?</h2>
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">Delete User?</h2>
                         <p className="text-gray-500 mb-6 text-sm">
                             Are you sure you want to delete this user? This action cannot be undone.
                         </p>
@@ -381,19 +459,29 @@ export default function AdminCustomers() {
                         <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
                             <Key className="w-8 h-8" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-2">Reset Password?</h2>
-                        <p className="text-gray-500 mb-6 text-sm">
-                            Send a password reset link to <strong>{resetPasswordUser.email}</strong>? They will receive an email with instructions to create a new password.
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">Change Password</h2>
+                        <p className="text-gray-500 mb-4 text-sm">
+                            Set a new password for <strong>{resetPasswordUser.email}</strong>.
                         </p>
+                        <div className="text-left mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={e => setNewPassword(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2db34a]"
+                                placeholder="Enter new password"
+                            />
+                        </div>
                         <div className="flex gap-3 justify-center">
-                            <button onClick={() => setResetPasswordUser(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors flex-1">
+                            <button onClick={() => {
+                                setResetPasswordUser(null);
+                                setNewPassword('');
+                            }} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors flex-1">
                                 Cancel
                             </button>
-                            <button onClick={() => {
-                                alert(`Password reset link sent to ${resetPasswordUser.email}`);
-                                setResetPasswordUser(null);
-                            }} className="px-4 py-2 bg-amber-600 text-white hover:bg-amber-700 rounded-lg font-medium transition-colors flex-1">
-                                Send Link
+                            <button onClick={handleResetPassword} className="px-4 py-2 bg-amber-600 text-white hover:bg-amber-700 rounded-lg font-medium transition-colors flex-1">
+                                Set Password
                             </button>
                         </div>
                     </div>
