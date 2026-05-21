@@ -61,8 +61,8 @@ export default function AdminProducts() {
             ...formData,
             price: parseFloat(formData.price as string) || 0,
             stock: parseInt(formData.stock as string) || 0,
-            rating: parseFloat(formData.rating as string) || 5,
-            reviewCount: parseInt(formData.reviewCount as string) || 0,
+            rating: parseFloat(formData.rating as unknown as string) || 5,
+            reviewCount: parseInt(formData.reviewCount as unknown as string) || 0,
         }
 
         try {
@@ -135,7 +135,8 @@ export default function AdminProducts() {
                         setFormData({ 
                             name: '', description: '', price: '', stock: '', 
                             category: categories.length > 0 ? categories[0].name : 'Electronics', 
-                            status: 'Active', rating: 5, reviewCount: 0, image: '', isWeeklyPopular: false 
+                            status: 'Active', rating: 5, reviewCount: 0, image: '', isWeeklyPopular: false,
+                            isOnDeal: false, discountPercent: 0
                         })
                         setIsAddOpen(true)
                     }}

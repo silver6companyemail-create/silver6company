@@ -35,8 +35,15 @@ export default function Login() {
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 toast.success('Login successful!')
                 
-                if (data.role === 'user') {
+                const roleLower = data.role ? data.role.toLowerCase() : '';
+                if (roleLower === 'user') {
                     router.push('/user-dashboard')
+                } else if (roleLower === 'editor') {
+                    router.push('/editor')
+                } else if (roleLower === 'contentcreator' || roleLower === 'content creator' || roleLower === 'creator') {
+                    router.push('/contentcreator')
+                } else if (roleLower === 'sales') {
+                    router.push('/sales')
                 } else {
                     router.push('/admin')
                 }

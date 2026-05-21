@@ -404,7 +404,7 @@ export default function LandingControls() {
                             {deliveryForm.zones.length === 0 && <p className="text-xs text-gray-400 italic">No zones yet.</p>}
                             <div className="space-y-2">
                                 {deliveryForm.zones.map((z, idx) => (
-                                    <div key={idx} className="grid grid-cols-3 gap-2 items-center">
+                                    <div key={idx} className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-center pb-3 border-b border-gray-100 sm:pb-0 sm:border-0">
                                         <input type="text" value={z.zone} onChange={e => { const u = [...deliveryForm.zones]; u[idx] = {...u[idx], zone: e.target.value}; setDeliveryForm({...deliveryForm, zones: u}); }} className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#2db34a] bg-white" placeholder="Zone name" />
                                         <input type="text" value={z.time} onChange={e => { const u = [...deliveryForm.zones]; u[idx] = {...u[idx], time: e.target.value}; setDeliveryForm({...deliveryForm, zones: u}); }} className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#2db34a] bg-white" placeholder="e.g. 24 Hours" />
                                         <div className="flex gap-2">
